@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam SMS Detection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        textarea { width: 100%; height: 150px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Spam SMS Detection</h1>
+        <form id="smsForm">
+            <textarea id="smsText" placeholder="Enter SMS here..."></textarea><br><br>
+            <button type="button" onclick="checkSpam()">Check Spam</button>
+        </form>
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        async function checkSpam() {
+    const smsText = document.getElementById('smsText').value;  // Corrected the id to 'smsText'
+
+    if (smsText.trim() === "") {
+        alert("Please enter a message.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 'sms_text': smsText }),
+        });
+        const result = await response.json();
+        document.getElementById('result').innerText = 'Prediction: ' + result.prediction;
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to get prediction. Please try again.');
+    }
+}
+
+
+    </script>
+
+</body>
+</html>
